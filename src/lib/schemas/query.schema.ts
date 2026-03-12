@@ -8,6 +8,18 @@ export const LeaderboardMetrics = [
   "yellowCards",
   "redCards",
   "minutesPlayed",
+  // Detailed stats from Opta
+  "shots",
+  "shotsOnTarget",
+  "headedShots",
+  "tackles",
+  "tacklesWon",
+  "interceptions",
+  "blocks",
+  "passes",
+  "passesCompleted",
+  "saves",
+  "goalKicks",
 ] as const;
 
 export const LeaderboardMetricSchema = z.enum(LeaderboardMetrics);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   LeaderboardMetricSchema,
+  LeaderboardMetrics,
   LeaderboardQuerySchema,
 } from "@/lib/schemas/query.schema";
 import { getLeaderboard } from "@/lib/services/leaderboard.service";
@@ -16,15 +17,7 @@ export async function GET(
     return NextResponse.json(
       {
         error: "Invalid metric",
-        validMetrics: [
-          "appearances",
-          "goals",
-          "assists",
-          "cleanSheets",
-          "yellowCards",
-          "redCards",
-          "minutesPlayed",
-        ],
+        validMetrics: LeaderboardMetrics,
       },
       { status: 400 }
     );

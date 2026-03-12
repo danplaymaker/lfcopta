@@ -160,6 +160,94 @@ describe("MockProvider", () => {
         expect(entry.value).toBeGreaterThan(0);
       });
     });
+
+    it("returns detailed stats leaderboard (tackles)", async () => {
+      const query: LeaderboardQuery = { limit: 5 };
+      const result = await provider.getLeaderboard("tackles", query);
+      expect(result.length).toBeGreaterThan(0);
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i - 1].value).toBeGreaterThanOrEqual(result[i].value);
+      }
+      // Gerrard should be top tackler in mock data (1230)
+      expect(result[0].player.slug).toBe("steven-gerrard");
+    });
+
+    it("returns detailed stats leaderboard (shots)", async () => {
+      const query: LeaderboardQuery = { limit: 3 };
+      const result = await provider.getLeaderboard("shots", query);
+      expect(result.length).toBe(3);
+      // Rush has most shots (2100)
+      expect(result[0].player.slug).toBe("ian-rush");
+      expect(result[0].value).toBe(2100);
+    });
+
+    it("returns saves leaderboard (goalkeeper stat)", async () => {
+      const query: LeaderboardQuery = { limit: 5 };
+      const result = await provider.getLeaderboard("saves", query);
+      // Only Alisson has saves in mock data
+      expect(result.length).toBe(1);
+      expect(result[0].player.slug).toBe("alisson-becker");
+      expect(result[0].value).toBe(890);
+    });
+
+    it("can sort players by detailed stat field", async () => {
+      const query: PlayersQuery = {
+        sort: "tackles",
+        order: "desc",
+        limit: 3,
+        offset: 0,
+      };
+      const result = await provider.getPlayers(query);
+      expect(result.players.length).toBe(3);
+      const tackles = result.players.map(
+        (p) => p.detailedStats?.tackles ?? 0
+      );
+      expect(tackles[0]).toBeGreaterThanOrEqual(tackles[1]);
+      expect(tackles[1]).toBeGreaterThanOrEqual(tackles[2]);
+    });
+  });
+
+  describe("detailedStats and percentages", () => {
+    it("players have detailedStats populated", async () => {
+      const player = await provider.getPlayerBySlug("steven-gerrard");
+      expect(player).not.toBeNull();
+      expect(player!.detailedStats).toBeDefined();
+      expect(player!.detailedStats!.shots).toBe(1450);
+      expect(player!.detailedStats!.tackles).toBe(1230);
+      expect(player!.detailedStats!.passes).toBe(32450);
+    });
+
+    it("players have percentage stats", async () => {
+      const player = await provider.getPlayerBySlug("steven-gerrard");
+      expect(player!.percentages).toBeDefined();
+      expect(player!.percentages!.shotAccuracy).toBe(43);
+      expect(player!.percentages!.passAccuracy).toBe(81);
+    });
+
+    it("goalkeeper has save percentage", async () => {
+      const player = await provider.getPlayerBySlug("alisson-becker");
+      expect(player!.percentages).toBeDefined();
+      expect(player!.percentages!.savePercentage).toBe(79);
+    });
+
+    it("current season data is present for active players", async () => {
+      const player = await provider.getPlayerBySlug("mohamed-salah");
+      expect(player!.currentSeason).toBeDefined();
+      expect(player!.currentSeason!.season).toBe("2024-25");
+      expect(player!.currentSeason!.games).toBe(32);
+      expect(player!.currentSeason!.detailedStats).toBeDefined();
+      expect(player!.currentSeason!.percentages).toBeDefined();
+    });
+
+    it("last match data is present for players with recent games", async () => {
+      const player = await provider.getPlayerBySlug("mohamed-salah");
+      expect(player!.lastMatch).toBeDefined();
+      expect(player!.lastMatch!.matchId).toBe("mock-match-001");
+      expect(player!.lastMatch!.stats).toBeDefined();
+      expect(player!.lastMatch!.stats!.goals).toBe(1);
+      expect(player!.lastMatch!.percentages).toBeDefined();
+      expect(player!.lastMatch!.percentages!.shotAccuracy).toBe(60);
+    });
   });
 
   describe("comparePlayers", () => {
@@ -174,6 +262,26 @@ describe("MockProvider", () => {
       const goalsMetric = result.metrics.find((m) => m.metric === "goals");
       expect(goalsMetric).toBeDefined();
       expect(goalsMetric!.values.length).toBe(2);
+    });
+
+    it("comparison includes detailed stat metrics", async () => {
+      const result = await provider.comparePlayers([
+        "ian-rush",
+        "steven-gerrard",
+      ]);
+
+      const tacklesMetric = result.metrics.find(
+        (m) => m.metric === "tackles"
+      );
+      expect(tacklesMetric).toBeDefined();
+
+      const shotsMetric = result.metrics.find((m) => m.metric === "shots");
+      expect(shotsMetric).toBeDefined();
+
+      const passesMetric = result.metrics.find(
+        (m) => m.metric === "passes"
+      );
+      expect(passesMetric).toBeDefined();
     });
 
     it("handles unknown slugs gracefully", async () => {

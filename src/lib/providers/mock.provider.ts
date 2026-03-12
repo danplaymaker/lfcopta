@@ -19,20 +19,65 @@ const COMPARE_METRICS = [
   "yellowCards",
   "redCards",
   "minutesPlayed",
+  "shots",
+  "shotsOnTarget",
+  "headedShots",
+  "tackles",
+  "tacklesWon",
+  "interceptions",
+  "blocks",
+  "passes",
+  "passesCompleted",
+  "saves",
+  "goalKicks",
 ] as const;
 
+/** Detailed stats live on player.detailedStats — this helper resolves them. */
+function getStatValue(
+  player: LiverpoolPlayerRecord,
+  key: string
+): number | undefined {
+  // Check top-level first
+  const topLevel = player[key as keyof LiverpoolPlayerRecord];
+  if (typeof topLevel === "number") return topLevel;
+
+  // Check detailedStats
+  if (player.detailedStats) {
+    const detailed =
+      player.detailedStats[key as keyof typeof player.detailedStats];
+    if (typeof detailed === "number") return detailed;
+  }
+
+  return undefined;
+}
+
+function nullsToUndefined(obj: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === null) continue;
+    if (typeof v === "object" && v !== null && !Array.isArray(v)) {
+      result[k] = nullsToUndefined(v as Record<string, unknown>);
+    } else {
+      result[k] = v;
+    }
+  }
+  return result;
+}
+
 function loadPlayers(): LiverpoolPlayerRecord[] {
-  return mockData.map((p) => ({
-    ...p,
-    team: p.team as LiverpoolPlayerRecord["team"],
-    cleanSheets: p.cleanSheets ?? undefined,
-    metadata: p.metadata
-      ? {
-          ...p.metadata,
-          source: p.metadata.source as "mock" | "static" | "statsperform",
-        }
-      : undefined,
-  }));
+  return mockData.map((p) => {
+    const cleaned = nullsToUndefined(p as unknown as Record<string, unknown>);
+    return {
+      ...cleaned,
+      team: p.team as LiverpoolPlayerRecord["team"],
+      metadata: p.metadata
+        ? {
+            ...p.metadata,
+            source: p.metadata.source as "mock" | "static" | "statsperform",
+          }
+        : undefined,
+    } as LiverpoolPlayerRecord;
+  });
 }
 
 export class MockProvider implements DataProvider {
@@ -62,10 +107,9 @@ export class MockProvider implements DataProvider {
       );
     }
 
-    const sortKey = query.sort as keyof LiverpoolPlayerRecord;
     results.sort((a, b) => {
-      const aVal = (a[sortKey] as number) ?? 0;
-      const bVal = (b[sortKey] as number) ?? 0;
+      const aVal = getStatValue(a, query.sort) ?? 0;
+      const bVal = getStatValue(b, query.sort) ?? 0;
       return query.order === "desc" ? bVal - aVal : aVal - bVal;
     });
 
@@ -109,13 +153,11 @@ export class MockProvider implements DataProvider {
       players = players.filter((p) => p.metadata?.verified === true);
     }
 
-    players = players.filter(
-      (p) => (p[metric as keyof LiverpoolPlayerRecord] as number) != null
-    );
+    players = players.filter((p) => getStatValue(p, metric) != null);
 
     players.sort((a, b) => {
-      const aVal = (a[metric as keyof LiverpoolPlayerRecord] as number) ?? 0;
-      const bVal = (b[metric as keyof LiverpoolPlayerRecord] as number) ?? 0;
+      const aVal = getStatValue(a, metric) ?? 0;
+      const bVal = getStatValue(b, metric) ?? 0;
       return bVal - aVal;
     });
 
@@ -124,7 +166,7 @@ export class MockProvider implements DataProvider {
     return limited.map((player, index) => ({
       rank: index + 1,
       player,
-      value: (player[metric as keyof LiverpoolPlayerRecord] as number) ?? 0,
+      value: getStatValue(player, metric) ?? 0,
     }));
   }
 
@@ -137,7 +179,7 @@ export class MockProvider implements DataProvider {
       metric,
       values: players.map((p) => ({
         slug: p.slug,
-        value: p[metric as keyof LiverpoolPlayerRecord] as number | undefined,
+        value: getStatValue(p, metric),
       })),
     }));
 

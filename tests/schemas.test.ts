@@ -45,6 +45,77 @@ describe("Player Schema", () => {
     const result = LiverpoolPlayerRecordSchema.safeParse(player);
     expect(result.success).toBe(true);
   });
+
+  it("validates player with detailedStats", () => {
+    const player = {
+      playerId: "lfc-001",
+      slug: "test",
+      fullName: "Test Player",
+      team: "LFC Men",
+      appearances: 100,
+      detailedStats: {
+        shots: 200,
+        shotsOnTarget: 80,
+        tackles: 150,
+        passesCompleted: 5000,
+        passes: 6000,
+      },
+    };
+    const result = LiverpoolPlayerRecordSchema.safeParse(player);
+    expect(result.success).toBe(true);
+  });
+
+  it("validates player with percentages", () => {
+    const player = {
+      playerId: "lfc-001",
+      slug: "test",
+      fullName: "Test Player",
+      team: "LFC Men",
+      appearances: 100,
+      percentages: {
+        shotAccuracy: 42,
+        shotConversion: 13,
+        tackleWinRate: 72,
+        passAccuracy: 81,
+        savePercentage: 79,
+      },
+    };
+    const result = LiverpoolPlayerRecordSchema.safeParse(player);
+    expect(result.success).toBe(true);
+  });
+
+  it("validates player with currentSeason and lastMatch", () => {
+    const player = {
+      playerId: "lfc-001",
+      slug: "test",
+      fullName: "Test Player",
+      team: "LFC Men",
+      appearances: 100,
+      currentSeason: {
+        season: "2024-25",
+        games: 30,
+        detailedStats: { shots: 50, tackles: 20 },
+        percentages: { shotAccuracy: 40 },
+      },
+      lastMatch: {
+        matchId: "m001",
+        date: "2025-03-08",
+        description: "Liverpool vs Test",
+        stats: {
+          goals: 1,
+          assists: 0,
+          shots: 3,
+          shotsOnTarget: 2,
+        },
+        percentages: {
+          shotAccuracy: 67,
+          shotConversion: 33,
+        },
+      },
+    };
+    const result = LiverpoolPlayerRecordSchema.safeParse(player);
+    expect(result.success).toBe(true);
+  });
 });
 
 describe("PlayersQuery Schema", () => {
@@ -61,7 +132,7 @@ describe("PlayersQuery Schema", () => {
 });
 
 describe("LeaderboardMetric Schema", () => {
-  it("accepts valid metrics", () => {
+  it("accepts valid metrics including detailed stats", () => {
     const validMetrics = [
       "appearances",
       "goals",
@@ -70,6 +141,17 @@ describe("LeaderboardMetric Schema", () => {
       "yellowCards",
       "redCards",
       "minutesPlayed",
+      "shots",
+      "shotsOnTarget",
+      "headedShots",
+      "tackles",
+      "tacklesWon",
+      "interceptions",
+      "blocks",
+      "passes",
+      "passesCompleted",
+      "saves",
+      "goalKicks",
     ];
     validMetrics.forEach((metric) => {
       expect(LeaderboardMetricSchema.safeParse(metric).success).toBe(true);

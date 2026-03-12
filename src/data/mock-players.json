@@ -12,6 +12,27 @@
     "yellowCards": 77,
     "redCards": 5,
     "minutesPlayed": 56892,
+    "detailedStats": {
+      "shots": 1450,
+      "shotsOnTarget": 620,
+      "headedShots": 185,
+      "tackles": 1230,
+      "tacklesWon": 890,
+      "interceptions": 645,
+      "blocks": 210,
+      "passes": 32450,
+      "passesCompleted": 26120,
+      "saves": null,
+      "shotsFaced": null,
+      "shotsOnTargetFaced": null,
+      "goalKicks": null
+    },
+    "percentages": {
+      "shotAccuracy": 43,
+      "shotConversion": 13,
+      "tackleWinRate": 72,
+      "passAccuracy": 81
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -31,6 +52,27 @@
     "yellowCards": 18,
     "redCards": 1,
     "minutesPlayed": 50234,
+    "detailedStats": {
+      "shots": 2100,
+      "shotsOnTarget": 1050,
+      "headedShots": 380,
+      "tackles": 420,
+      "tacklesWon": 280,
+      "interceptions": 190,
+      "blocks": 85,
+      "passes": 12800,
+      "passesCompleted": 9200,
+      "saves": null,
+      "shotsFaced": null,
+      "shotsOnTargetFaced": null,
+      "goalKicks": null
+    },
+    "percentages": {
+      "shotAccuracy": 50,
+      "shotConversion": 16,
+      "tackleWinRate": 67,
+      "passAccuracy": 72
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -49,6 +91,27 @@
     "yellowCards": 12,
     "redCards": 0,
     "minutesPlayed": 40210,
+    "detailedStats": {
+      "shots": 1280,
+      "shotsOnTarget": 590,
+      "headedShots": 145,
+      "tackles": 310,
+      "tacklesWon": 210,
+      "interceptions": 175,
+      "blocks": 60,
+      "passes": 15600,
+      "passesCompleted": 11700,
+      "saves": null,
+      "shotsFaced": null,
+      "shotsOnTargetFaced": null,
+      "goalKicks": null
+    },
+    "percentages": {
+      "shotAccuracy": 46,
+      "shotConversion": 13,
+      "tackleWinRate": 68,
+      "passAccuracy": 75
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -67,6 +130,27 @@
     "yellowCards": 34,
     "redCards": 2,
     "minutesPlayed": 27820,
+    "detailedStats": {
+      "shots": 1150,
+      "shotsOnTarget": 560,
+      "headedShots": 195,
+      "tackles": 180,
+      "tacklesWon": 110,
+      "interceptions": 75,
+      "blocks": 30,
+      "passes": 7200,
+      "passesCompleted": 5100,
+      "saves": null,
+      "shotsFaced": null,
+      "shotsOnTargetFaced": null,
+      "goalKicks": null
+    },
+    "percentages": {
+      "shotAccuracy": 49,
+      "shotConversion": 16,
+      "tackleWinRate": 61,
+      "passAccuracy": 71
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -85,6 +169,72 @@
     "yellowCards": 15,
     "redCards": 0,
     "minutesPlayed": 30120,
+    "detailedStats": {
+      "shots": 1680,
+      "shotsOnTarget": 710,
+      "headedShots": 120,
+      "tackles": 245,
+      "tacklesWon": 155,
+      "interceptions": 130,
+      "blocks": 45,
+      "passes": 10500,
+      "passesCompleted": 8200,
+      "saves": null,
+      "shotsFaced": null,
+      "shotsOnTargetFaced": null,
+      "goalKicks": null
+    },
+    "percentages": {
+      "shotAccuracy": 42,
+      "shotConversion": 13,
+      "tackleWinRate": 63,
+      "passAccuracy": 78
+    },
+    "currentSeason": {
+      "season": "2024-25",
+      "games": 32,
+      "detailedStats": {
+        "shots": 145,
+        "shotsOnTarget": 62,
+        "headedShots": 10,
+        "tackles": 22,
+        "tacklesWon": 14,
+        "interceptions": 12,
+        "blocks": 4,
+        "passes": 980,
+        "passesCompleted": 770
+      },
+      "percentages": {
+        "shotAccuracy": 43,
+        "shotConversion": 14,
+        "tackleWinRate": 64,
+        "passAccuracy": 79
+      }
+    },
+    "lastMatch": {
+      "matchId": "mock-match-001",
+      "date": "2025-03-08",
+      "description": "Liverpool vs Manchester United",
+      "stats": {
+        "goals": 1,
+        "assists": 1,
+        "shots": 5,
+        "shotsOnTarget": 3,
+        "headedShots": 0,
+        "tackles": 1,
+        "tacklesWon": 1,
+        "interceptions": 0,
+        "blocks": 0,
+        "passes": 32,
+        "passesCompleted": 26
+      },
+      "percentages": {
+        "shotAccuracy": 60,
+        "shotConversion": 20,
+        "tackleWinRate": 100,
+        "passAccuracy": 81
+      }
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -103,6 +253,48 @@
     "yellowCards": 42,
     "redCards": 2,
     "minutesPlayed": 25480,
+    "detailedStats": {
+      "shots": 210,
+      "shotsOnTarget": 85,
+      "headedShots": 130,
+      "tackles": 580,
+      "tacklesWon": 460,
+      "interceptions": 720,
+      "blocks": 340,
+      "passes": 22100,
+      "passesCompleted": 19800,
+      "saves": null,
+      "shotsFaced": null,
+      "shotsOnTargetFaced": null,
+      "goalKicks": null
+    },
+    "percentages": {
+      "shotAccuracy": 40,
+      "shotConversion": 12,
+      "tackleWinRate": 79,
+      "passAccuracy": 90
+    },
+    "currentSeason": {
+      "season": "2024-25",
+      "games": 28,
+      "detailedStats": {
+        "shots": 18,
+        "shotsOnTarget": 8,
+        "headedShots": 12,
+        "tackles": 52,
+        "tacklesWon": 42,
+        "interceptions": 68,
+        "blocks": 32,
+        "passes": 2100,
+        "passesCompleted": 1890
+      },
+      "percentages": {
+        "shotAccuracy": 44,
+        "shotConversion": 11,
+        "tackleWinRate": 81,
+        "passAccuracy": 90
+      }
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -121,6 +313,27 @@
     "yellowCards": 38,
     "redCards": 1,
     "minutesPlayed": 27650,
+    "detailedStats": {
+      "shots": 320,
+      "shotsOnTarget": 110,
+      "headedShots": 15,
+      "tackles": 490,
+      "tacklesWon": 330,
+      "interceptions": 510,
+      "blocks": 190,
+      "passes": 25800,
+      "passesCompleted": 21400,
+      "saves": null,
+      "shotsFaced": null,
+      "shotsOnTargetFaced": null,
+      "goalKicks": null
+    },
+    "percentages": {
+      "shotAccuracy": 34,
+      "shotConversion": 7,
+      "tackleWinRate": 67,
+      "passAccuracy": 83
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -139,6 +352,41 @@
     "yellowCards": 8,
     "redCards": 1,
     "minutesPlayed": 24480,
+    "detailedStats": {
+      "shots": null,
+      "shotsOnTarget": null,
+      "headedShots": null,
+      "tackles": 12,
+      "tacklesWon": 8,
+      "interceptions": 45,
+      "blocks": 5,
+      "passes": 8900,
+      "passesCompleted": 6850,
+      "saves": 890,
+      "shotsFaced": 1820,
+      "shotsOnTargetFaced": 1120,
+      "goalKicks": 2450
+    },
+    "percentages": {
+      "passAccuracy": 77,
+      "savePercentage": 79
+    },
+    "currentSeason": {
+      "season": "2024-25",
+      "games": 26,
+      "detailedStats": {
+        "passes": 820,
+        "passesCompleted": 640,
+        "saves": 78,
+        "shotsFaced": 165,
+        "shotsOnTargetFaced": 98,
+        "goalKicks": 210
+      },
+      "percentages": {
+        "passAccuracy": 78,
+        "savePercentage": 80
+      }
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -157,6 +405,23 @@
     "yellowCards": 4,
     "redCards": 0,
     "minutesPlayed": 41230,
+    "detailedStats": {
+      "shots": 1950,
+      "shotsOnTarget": 980,
+      "headedShots": 420,
+      "tackles": 350,
+      "tacklesWon": 230,
+      "interceptions": 160,
+      "blocks": 70,
+      "passes": 10200,
+      "passesCompleted": 7100
+    },
+    "percentages": {
+      "shotAccuracy": 50,
+      "shotConversion": 15,
+      "tackleWinRate": 66,
+      "passAccuracy": 70
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -175,6 +440,23 @@
     "yellowCards": 2,
     "redCards": 0,
     "minutesPlayed": 45670,
+    "detailedStats": {
+      "shots": 1720,
+      "shotsOnTarget": 840,
+      "headedShots": 290,
+      "tackles": 410,
+      "tacklesWon": 280,
+      "interceptions": 200,
+      "blocks": 90,
+      "passes": 14200,
+      "passesCompleted": 10300
+    },
+    "percentages": {
+      "shotAccuracy": 49,
+      "shotConversion": 13,
+      "tackleWinRate": 68,
+      "passAccuracy": 73
+    },
     "metadata": {
       "source": "mock",
       "verified": true,
@@ -193,6 +475,23 @@
     "yellowCards": 5,
     "redCards": 0,
     "minutesPlayed": 4890,
+    "detailedStats": {
+      "shots": 185,
+      "shotsOnTarget": 92,
+      "headedShots": 25,
+      "tackles": 110,
+      "tacklesWon": 72,
+      "interceptions": 65,
+      "blocks": 18,
+      "passes": 2400,
+      "passesCompleted": 1750
+    },
+    "percentages": {
+      "shotAccuracy": 50,
+      "shotConversion": 15,
+      "tackleWinRate": 65,
+      "passAccuracy": 73
+    },
     "metadata": {
       "source": "mock",
       "verified": false,
@@ -211,6 +510,23 @@
     "yellowCards": 6,
     "redCards": 0,
     "minutesPlayed": 5920,
+    "detailedStats": {
+      "shots": 120,
+      "shotsOnTarget": 55,
+      "headedShots": 10,
+      "tackles": 165,
+      "tacklesWon": 115,
+      "interceptions": 95,
+      "blocks": 28,
+      "passes": 3800,
+      "passesCompleted": 2950
+    },
+    "percentages": {
+      "shotAccuracy": 46,
+      "shotConversion": 10,
+      "tackleWinRate": 70,
+      "passAccuracy": 78
+    },
     "metadata": {
       "source": "mock",
       "verified": false,
