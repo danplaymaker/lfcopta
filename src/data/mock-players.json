@@ -1,0 +1,220 @@
+[
+  {
+    "playerId": "lfc-001",
+    "optaPlayerId": "p14306",
+    "slug": "steven-gerrard",
+    "fullName": "Steven Gerrard",
+    "team": "LFC Men",
+    "appearances": 710,
+    "goals": 186,
+    "assists": 145,
+    "cleanSheets": null,
+    "yellowCards": 77,
+    "redCards": 5,
+    "minutesPlayed": 56892,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-002",
+    "optaPlayerId": "p17735",
+    "slug": "ian-rush",
+    "fullName": "Ian Rush",
+    "team": "LFC Men",
+    "appearances": 660,
+    "goals": 346,
+    "assists": 63,
+    "cleanSheets": null,
+    "yellowCards": 18,
+    "redCards": 1,
+    "minutesPlayed": 50234,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-003",
+    "slug": "kenny-dalglish",
+    "fullName": "Kenny Dalglish",
+    "team": "LFC Men",
+    "appearances": 515,
+    "goals": 172,
+    "assists": 98,
+    "cleanSheets": null,
+    "yellowCards": 12,
+    "redCards": 0,
+    "minutesPlayed": 40210,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-004",
+    "slug": "robbie-fowler",
+    "fullName": "Robbie Fowler",
+    "team": "LFC Men",
+    "appearances": 369,
+    "goals": 183,
+    "assists": 42,
+    "cleanSheets": null,
+    "yellowCards": 34,
+    "redCards": 2,
+    "minutesPlayed": 27820,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-005",
+    "slug": "mohamed-salah",
+    "fullName": "Mohamed Salah",
+    "team": "LFC Men",
+    "appearances": 394,
+    "goals": 221,
+    "assists": 99,
+    "cleanSheets": null,
+    "yellowCards": 15,
+    "redCards": 0,
+    "minutesPlayed": 30120,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-006",
+    "slug": "virgil-van-dijk",
+    "fullName": "Virgil van Dijk",
+    "team": "LFC Men",
+    "appearances": 295,
+    "goals": 25,
+    "assists": 12,
+    "cleanSheets": 118,
+    "yellowCards": 42,
+    "redCards": 2,
+    "minutesPlayed": 25480,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-007",
+    "slug": "trent-alexander-arnold",
+    "fullName": "Trent Alexander-Arnold",
+    "team": "LFC Men",
+    "appearances": 340,
+    "goals": 21,
+    "assists": 83,
+    "cleanSheets": 102,
+    "yellowCards": 38,
+    "redCards": 1,
+    "minutesPlayed": 27650,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-008",
+    "slug": "alisson-becker",
+    "fullName": "Alisson Becker",
+    "team": "LFC Men",
+    "appearances": 272,
+    "goals": 1,
+    "assists": 3,
+    "cleanSheets": 117,
+    "yellowCards": 8,
+    "redCards": 1,
+    "minutesPlayed": 24480,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-009",
+    "slug": "roger-hunt",
+    "fullName": "Roger Hunt",
+    "team": "LFC Men",
+    "appearances": 492,
+    "goals": 285,
+    "assists": 54,
+    "cleanSheets": null,
+    "yellowCards": 4,
+    "redCards": 0,
+    "minutesPlayed": 41230,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-010",
+    "slug": "billy-liddell",
+    "fullName": "Billy Liddell",
+    "team": "LFC Men",
+    "appearances": 534,
+    "goals": 228,
+    "assists": 67,
+    "cleanSheets": null,
+    "yellowCards": 2,
+    "redCards": 0,
+    "minutesPlayed": 45670,
+    "metadata": {
+      "source": "mock",
+      "verified": true,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-w-001",
+    "slug": "rachel-furness",
+    "fullName": "Rachel Furness",
+    "team": "LFC Women",
+    "appearances": 65,
+    "goals": 28,
+    "assists": 14,
+    "cleanSheets": null,
+    "yellowCards": 5,
+    "redCards": 0,
+    "minutesPlayed": 4890,
+    "metadata": {
+      "source": "mock",
+      "verified": false,
+      "lastUpdated": "2024-01-01"
+    }
+  },
+  {
+    "playerId": "lfc-w-002",
+    "slug": "missy-bo-kearns",
+    "fullName": "Missy Bo Kearns",
+    "team": "LFC Women",
+    "appearances": 78,
+    "goals": 12,
+    "assists": 22,
+    "cleanSheets": null,
+    "yellowCards": 6,
+    "redCards": 0,
+    "minutesPlayed": 5920,
+    "metadata": {
+      "source": "mock",
+      "verified": false,
+      "lastUpdated": "2024-01-01"
+    }
+  }
+]
