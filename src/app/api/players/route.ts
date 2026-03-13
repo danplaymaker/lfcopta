@@ -21,7 +21,14 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const result = await getPlayers(parseResult.data);
-
-  return NextResponse.json(result);
+  try {
+    const result = await getPlayers(parseResult.data);
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("[/api/players] Error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch players", message: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
+  }
 }
