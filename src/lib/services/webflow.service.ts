@@ -13,18 +13,32 @@ export async function fetchAllWebflowItems(
   collectionId: string,
   token: string
 ): Promise<WebflowItem[]> {
-  const url = `https://api.webflow.com/v2/collections/${collectionId}/items?limit=100`;
+  const allItems: WebflowItem[] = [];
+  let offset = 0;
+  const limit = 100;
 
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  while (true) {
+    const url = `https://api.webflow.com/v2/collections/${collectionId}/items?limit=${limit}&offset=${offset}`;
 
-  if (!res.ok) {
-    throw new Error(`Webflow fetch failed ${res.status}: ${await res.text()}`);
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) {
+      throw new Error(
+        `Webflow fetch failed ${res.status}: ${await res.text()}`
+      );
+    }
+
+    const json = await res.json();
+    const items: WebflowItem[] = json.items || [];
+    allItems.push(...items);
+
+    if (items.length < limit) break;
+    offset += limit;
   }
 
-  const json = await res.json();
-  return json.items || [];
+  return allItems;
 }
 
 export async function updateWebflowItem(

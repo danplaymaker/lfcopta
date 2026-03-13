@@ -85,7 +85,7 @@ export class StatsPerformProvider implements DataProvider {
     const team = (process.env.STATSPERFORM_TEAM || "LFC Men") as
       | "LFC Men"
       | "LFC Women";
-    const season = process.env.STATSPERFORM_SEASON || "2024-25";
+    const season = process.env.STATSPERFORM_SEASON || "2025-26";
 
     if (!outletApiKey || !outletSecretKey || !contestantId || !tmclIdsRaw) {
       throw new Error(
