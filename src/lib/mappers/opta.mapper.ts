@@ -92,6 +92,18 @@ export const LAST_MATCH_PERCENT_FIELDS = {
   savePercent: "saves---last-match",
 };
 
+/** All-time total → Webflow field slug */
+export const ALL_TIME_FIELDS: Record<string, string> = {
+  appearances: "all-time-appearances",
+  goals: "all-time-goals",
+  assists: "all-time-assists",
+  cleanSheets: "all-time-clean-sheets",
+  yellowCards: "all-time-yellow-cards",
+  redCards: "all-time-red-cards",
+  minutesPlayed: "all-time-minutes-played",
+  saves: "all-time-saves",
+};
+
 // ── Helpers ──
 
 export function safePercent(numerator: number, denominator: number): number {
