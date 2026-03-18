@@ -65,10 +65,10 @@ function getStatValue(
  * aggregates season stats, and serves them through the standard provider interface.
  *
  * Required environment variables:
- * - STATSPERFORM_OUTLET_API_KEY
- * - STATSPERFORM_OUTLET_SECRET_KEY
- * - STATSPERFORM_CONTESTANT_ID
- * - STATSPERFORM_TMCL_IDS (comma-separated)
+ * - OUTLET_API_KEY
+ * - OUTLET_SECRET_KEY
+ * - MEN_OPTA_CONTESTANT_ID
+ * - OPTA_TOURNAMENT_CALENDAR_IDS (comma-separated)
  * - STATSPERFORM_TEAM (optional, defaults to "LFC Men")
  */
 export class StatsPerformProvider implements DataProvider {
@@ -78,10 +78,10 @@ export class StatsPerformProvider implements DataProvider {
   private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
   private getConfig() {
-    const outletApiKey = process.env.STATSPERFORM_OUTLET_API_KEY;
-    const outletSecretKey = process.env.STATSPERFORM_OUTLET_SECRET_KEY;
-    const contestantId = process.env.STATSPERFORM_CONTESTANT_ID;
-    const tmclIdsRaw = process.env.STATSPERFORM_TMCL_IDS;
+    const outletApiKey = process.env.OUTLET_API_KEY;
+    const outletSecretKey = process.env.OUTLET_SECRET_KEY;
+    const contestantId = process.env.MEN_OPTA_CONTESTANT_ID;
+    const tmclIdsRaw = process.env.OPTA_TOURNAMENT_CALENDAR_IDS;
     const team = (process.env.STATSPERFORM_TEAM || "LFC Men") as
       | "LFC Men"
       | "LFC Women";
@@ -89,9 +89,9 @@ export class StatsPerformProvider implements DataProvider {
 
     if (!outletApiKey || !outletSecretKey || !contestantId || !tmclIdsRaw) {
       throw new Error(
-        "Stats Perform provider requires STATSPERFORM_OUTLET_API_KEY, " +
-          "STATSPERFORM_OUTLET_SECRET_KEY, STATSPERFORM_CONTESTANT_ID, " +
-          "and STATSPERFORM_TMCL_IDS environment variables."
+        "Stats Perform provider requires OUTLET_API_KEY, " +
+          "OUTLET_SECRET_KEY, MEN_OPTA_CONTESTANT_ID, " +
+          "and OPTA_TOURNAMENT_CALENDAR_IDS environment variables."
       );
     }
 
