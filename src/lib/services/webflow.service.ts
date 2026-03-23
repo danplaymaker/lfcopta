@@ -80,9 +80,9 @@ export async function updateWebflowItem(
 }
 
 /**
- * Fetch all domain IDs for a Webflow site (custom + staging).
+ * Fetch custom domain IDs for a Webflow site.
  */
-async function fetchDomainIds(
+async function fetchCustomDomainIds(
   siteId: string,
   token: string
 ): Promise<string[]> {
@@ -104,21 +104,23 @@ async function fetchDomainIds(
 }
 
 /**
- * Publish a Webflow site by auto-fetching its domain IDs first.
+ * Publish a Webflow site to its staging subdomain and any custom domains.
  */
 export async function publishWebflowSite(
   siteId: string,
   token: string
 ): Promise<unknown> {
-  const domainIds = await fetchDomainIds(siteId, token);
-
-  if (domainIds.length === 0) {
-    throw new Error(
-      "Webflow publish failed: no domains found for site. Check your WEBFLOW_SITE_ID."
-    );
-  }
+  const customDomainIds = await fetchCustomDomainIds(siteId, token);
 
   const url = `https://api.webflow.com/v2/sites/${siteId}/publish`;
+
+  const body: Record<string, unknown> = {
+    publishToWebflowSubdomain: true,
+  };
+
+  if (customDomainIds.length > 0) {
+    body.customDomains = customDomainIds;
+  }
 
   const res = await fetch(url, {
     method: "POST",
@@ -126,7 +128,7 @@ export async function publishWebflowSite(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ publishTo: domainIds }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {
