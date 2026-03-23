@@ -227,9 +227,10 @@ async function runSeasonUpdate(
   const historical = loadHistoricalData();
   const historicalSide = label.includes("women") ? historical.women : historical.men;
 
-  const seasonSummary = new Map<string, { games: number; goals: number; assists: number; saves: number; minutes: number }>();
+  const seasonSummary = new Map<string, { name: string; games: number; goals: number; assists: number; saves: number; minutes: number }>();
   for (const [pid, agg] of playersAgg) {
     seasonSummary.set(pid, {
+      name: agg.name,
       games: agg.season.games,
       goals: agg.season.goals,
       assists: agg.season.assists,
