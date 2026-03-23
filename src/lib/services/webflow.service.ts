@@ -49,13 +49,21 @@ export async function updateWebflowItem(
 ): Promise<unknown> {
   const url = `https://api.webflow.com/v2/collections/${collectionId}/items/${itemId}`;
 
+  // Strip fields with undefined/null values so missing Webflow fields don't cause validation errors
+  const cleanFields: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(fields)) {
+    if (value !== undefined && value !== null) {
+      cleanFields[key] = value;
+    }
+  }
+
   const res = await fetch(url, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ fieldData: fields }),
+    body: JSON.stringify({ fieldData: cleanFields }),
   });
 
   if (!res.ok) {

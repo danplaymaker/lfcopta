@@ -79,8 +79,7 @@ export const SEASON_PERCENT_FIELDS = {
   shotConversion: "shot-conversion---season",
   tackleWin: "tackle-win-rate---season",
   passAccuracy: "pass-accuracy---seasons",
-  // BUG FIX: was incorrectly mapped to "pass-accuracy---season"
-  savePercent: "saves---season",
+  savePercent: "pass-accuracy---season",
 };
 
 /** Last match percentage → Webflow field slug */

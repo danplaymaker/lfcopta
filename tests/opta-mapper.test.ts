@@ -108,11 +108,8 @@ describe("safePercent", () => {
 });
 
 describe("Webflow field mappings", () => {
-  it("BUG FIX: savePercent season field is not the pass accuracy field", () => {
-    expect(SEASON_PERCENT_FIELDS.savePercent).toBe("saves---season");
-    expect(SEASON_PERCENT_FIELDS.savePercent).not.toBe(
-      "pass-accuracy---season"
-    );
+  it("savePercent season field uses correct Webflow slug", () => {
+    expect(SEASON_PERCENT_FIELDS.savePercent).toBe("pass-accuracy---season");
   });
 
   it("season and last-match percent fields don't overlap", () => {
