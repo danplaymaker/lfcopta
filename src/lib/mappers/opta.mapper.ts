@@ -98,9 +98,6 @@ export const ALL_TIME_FIELDS: Record<string, string> = {
   goals: "all-time-goals",
   assists: "all-time-assists",
   cleanSheets: "all-time-clean-sheets",
-  yellowCards: "all-time-yellow-cards",
-  redCards: "all-time-red-cards",
-  minutesPlayed: "all-time-minutes-played",
   saves: "all-time-saves",
 };
 

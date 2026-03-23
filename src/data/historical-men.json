@@ -1,0 +1,11 @@
+{
+  "_comment": "All-time historical base stats keyed by Stats Perform player UUID. Current season Opta stats are added on top of these. Populate UUIDs from /api/player-uuids.",
+  "PLAYER_UUID_HERE": {
+    "name": "Alisson Becker",
+    "appearances": 253,
+    "goals": 0,
+    "assists": 0,
+    "cleanSheets": 103,
+    "saves": 613
+  }
+}

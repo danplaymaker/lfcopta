@@ -227,15 +227,13 @@ async function runSeasonUpdate(
   const historical = loadHistoricalData();
   const historicalSide = label.includes("women") ? historical.women : historical.men;
 
-  const seasonSummary = new Map<string, { name: string; games: number; goals: number; assists: number; saves: number; minutes: number }>();
+  const seasonSummary = new Map<string, { games: number; goals: number; assists: number; saves: number }>();
   for (const [pid, agg] of playersAgg) {
     seasonSummary.set(pid, {
-      name: agg.name,
       games: agg.season.games,
       goals: agg.season.goals,
       assists: agg.season.assists,
       saves: agg.season.saves,
-      minutes: agg.season.minutes,
     });
   }
   const allTimeMap = mergeAllTimeStats(historicalSide, seasonSummary);
@@ -290,9 +288,6 @@ async function runSeasonUpdate(
       fd[ALL_TIME_FIELDS.goals] = allTimePlayer.goals;
       fd[ALL_TIME_FIELDS.assists] = allTimePlayer.assists;
       fd[ALL_TIME_FIELDS.cleanSheets] = allTimePlayer.cleanSheets;
-      fd[ALL_TIME_FIELDS.yellowCards] = allTimePlayer.yellowCards;
-      fd[ALL_TIME_FIELDS.redCards] = allTimePlayer.redCards;
-      fd[ALL_TIME_FIELDS.minutesPlayed] = allTimePlayer.minutesPlayed;
       fd[ALL_TIME_FIELDS.saves] = allTimePlayer.saves;
     }
 
