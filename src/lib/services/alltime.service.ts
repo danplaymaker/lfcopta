@@ -146,20 +146,60 @@ export function clearHistoricalCache(): void {
 }
 
 /**
+ * Check if an Opta short name matches a CSV full name.
+ *
+ * Opta uses "V. van Dijk", "A. Mac Allister", "M. Salah".
+ * CSV uses "Virgil van Dijk", "Alexis Mac Allister", "Mohamed Salah".
+ *
+ * Strategy: strip the first-name portion from each and compare the rest.
+ * If the Opta name starts with an initial (single letter), drop it.
+ * Then compare the remaining surname portion.
+ */
+function namesMatch(optaName: string, csvName: string): boolean {
+  const a = normaliseName(optaName);
+  const b = normaliseName(csvName);
+
+  // Direct match
+  if (a === b) return true;
+
+  const aParts = a.split(" ").filter(Boolean);
+  const bParts = b.split(" ").filter(Boolean);
+
+  if (aParts.length < 2 || bParts.length < 2) return false;
+
+  // Compare everything after the first name
+  const aSurname = aParts.slice(1).join(" ");
+  const bSurname = bParts.slice(1).join(" ");
+
+  return aSurname === bSurname && aSurname.length > 0;
+}
+
+/**
  * Look up a player in the historical dataset.
- * Tries UUID first, then falls back to name matching.
+ * Tries: 1) UUID, 2) exact normalised name, 3) surname match.
  */
 function findHistorical(
   dataset: HistoricalDataSet,
   uuid: string,
   name: string
 ): HistoricalPlayerStats | undefined {
+  // 1. UUID match
   if (uuid && dataset.byUuid.has(uuid)) {
     return dataset.byUuid.get(uuid);
   }
-  if (name) {
-    return dataset.byName.get(normaliseName(name));
+
+  if (!name) return undefined;
+
+  // 2. Exact normalised name match
+  const normalised = normaliseName(name);
+  const exact = dataset.byName.get(normalised);
+  if (exact) return exact;
+
+  // 3. Name similarity fallback (handles "V. van Dijk" vs "Virgil van Dijk")
+  for (const [csvNormalised, stats] of dataset.byName) {
+    if (namesMatch(name, csvNormalised)) return stats;
   }
+
   return undefined;
 }
 
