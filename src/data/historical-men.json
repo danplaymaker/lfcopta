@@ -1,6 +1,5 @@
 {
-  "_comment": "All-time PL stats. Keyed by Stats Perform player UUID. Run: npx tsx scripts/export-uuids.ts to get UUIDs from Webflow. Replace TODO_UUID_* placeholders with real UUIDs.",
-  "TODO_UUID_ALISSON": {
+  "53d0pvr7ylvfhp6p749iniqc5": {
     "name": "Alisson Becker",
     "appearances": 253,
     "goals": 0,
@@ -8,7 +7,7 @@
     "cleanSheets": 103,
     "saves": 613
   },
-  "TODO_UUID_WOODMAN": {
+  "7rnd1uiknmho0s7a0objtnlcl": {
     "name": "Freddie Woodman",
     "appearances": 0,
     "goals": 0,
@@ -16,7 +15,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_MAMARDASHVILI": {
+  "20o2dr1mdk18xhxmkujzgak89": {
     "name": "Giorgi Mamardashvili",
     "appearances": 5,
     "goals": 0,
@@ -24,7 +23,7 @@
     "cleanSheets": 1,
     "saves": 17
   },
-  "TODO_UUID_ROBERTSON": {
+  "eziqega9e25bg939pfh4vjp3p": {
     "name": "Andy Robertson",
     "appearances": 268,
     "goals": 10,
@@ -40,7 +39,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_GOMEZ": {
+  "29dp5gmu5xbd04mozwxq5tjh1": {
     "name": "Joe Gomez",
     "appearances": 164,
     "goals": 0,
@@ -48,7 +47,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_KONATE": {
+  "2zfjgh5747ge9r9q0thbk123t": {
     "name": "Ibrahima Konate",
     "appearances": 110,
     "goals": 2,
@@ -56,7 +55,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_BRADLEY": {
+  "5tbz2hexz7vind39ot6govqzu": {
     "name": "Conor Bradley",
     "appearances": 45,
     "goals": 1,
@@ -64,7 +63,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_KERKEZ": {
+  "a2zavv31d2aadyddk0kjttdgq": {
     "name": "Milos Kerkez",
     "appearances": 27,
     "goals": 1,
@@ -72,7 +71,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_FRIMPONG": {
+  "9qo448ueot8pfc5oqo378wag9": {
     "name": "Jeremie Frimpong",
     "appearances": 13,
     "goals": 0,
@@ -80,7 +79,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_LEONI": {
+  "9ejageyf74hgdw1n0uvnbc74k": {
     "name": "Giovanni Leoni",
     "appearances": 0,
     "goals": 0,
@@ -88,7 +87,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_JONES": {
+  "3kdl679ra6mlobdg09xqf7fft": {
     "name": "Curtis Jones",
     "appearances": 144,
     "goals": 10,
@@ -112,7 +111,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_GRAVENBERCH": {
+  "5ga7g20wsa7oqjbh4ijoeknl6": {
     "name": "Ryan Gravenberch",
     "appearances": 90,
     "goals": 5,
@@ -120,7 +119,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_ENDO": {
+  "3kti58d195gmtzwrjh5nprx05": {
     "name": "Wataru Endo",
     "appearances": 57,
     "goals": 1,
@@ -128,7 +127,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_WIRTZ": {
+  "2k5g68ywtr79lc45wozvifqlm": {
     "name": "Florian Wirtz",
     "appearances": 25,
     "goals": 4,
@@ -136,7 +135,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_NYONI": {
+  "e51jmlxup2pdr8ikl98etxgd0": {
     "name": "Trey Nyoni",
     "appearances": 3,
     "goals": 0,
@@ -144,7 +143,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_SALAH": {
+  "5ilkkfbsss0bxd6ttdlqg0uz9": {
     "name": "Mohamed Salah",
     "appearances": 309,
     "goals": 189,
@@ -152,7 +151,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_GAKPO": {
+  "9psfk94nduz6icnuwty5v9all": {
     "name": "Cody Gakpo",
     "appearances": 118,
     "goals": 31,
@@ -160,7 +159,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_CHIESA": {
+  "c6nl81c1q4unq5js94s6s942x": {
     "name": "Federico Chiesa",
     "appearances": 27,
     "goals": 2,
@@ -168,7 +167,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_EKITIKE": {
+  "3vx94h32ahujciraspdayj9t6": {
     "name": "Hugo Ekitike",
     "appearances": 26,
     "goals": 11,
@@ -176,7 +175,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_NGUMOHA": {
+  "154gonr6x9vuraxmzd9zi5xck": {
     "name": "Rio Ngumoha",
     "appearances": 11,
     "goals": 1,
@@ -184,7 +183,7 @@
     "cleanSheets": 0,
     "saves": 0
   },
-  "TODO_UUID_ISAK": {
+  "7x6mnev1ob4u5ffmdsvusb4rt": {
     "name": "Alexander Isak",
     "appearances": 16,
     "goals": 3,
