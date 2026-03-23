@@ -27,8 +27,10 @@ import {
   SEASON_TOTAL_FIELDS,
   SEASON_PERCENT_FIELDS,
   LAST_MATCH_PERCENT_FIELDS,
+  ALL_TIME_FIELDS,
 } from "@/lib/mappers/opta.mapper";
 import type { MatchPlayerStats } from "@/lib/mappers/opta.mapper";
+import { loadHistoricalData, mergeAllTimeStats } from "./alltime.service";
 
 // ── Types ──
 
@@ -221,6 +223,21 @@ async function runSeasonUpdate(
   );
   const webflowIndex = buildWebflowIndex(webflowItems);
 
+  // Load historical data and compute all-time totals
+  const historical = loadHistoricalData();
+  const historicalSide = label.includes("women") ? historical.women : historical.men;
+
+  const seasonSummary = new Map<string, { games: number; goals: number; assists: number; saves: number }>();
+  for (const [pid, agg] of playersAgg) {
+    seasonSummary.set(pid, {
+      games: agg.season.games,
+      goals: agg.season.goals,
+      assists: agg.season.assists,
+      saves: agg.season.saves,
+    });
+  }
+  const allTimeMap = mergeAllTimeStats(historicalSide, seasonSummary);
+
   let updated = 0;
   const unmatched: Array<{ playerId: string; name: string }> = [];
 
@@ -263,6 +280,16 @@ async function runSeasonUpdate(
       s.saves,
       s.shotsOnTargetFaced
     );
+
+    // All-time totals (historical base + season)
+    const allTimePlayer = allTimeMap.get(playerId);
+    if (allTimePlayer) {
+      fd[ALL_TIME_FIELDS.appearances] = allTimePlayer.appearances;
+      fd[ALL_TIME_FIELDS.goals] = allTimePlayer.goals;
+      fd[ALL_TIME_FIELDS.assists] = allTimePlayer.assists;
+      fd[ALL_TIME_FIELDS.cleanSheets] = allTimePlayer.cleanSheets;
+      fd[ALL_TIME_FIELDS.saves] = allTimePlayer.saves;
+    }
 
     await updateWebflowItem(
       env.WEBFLOW_COLLECTION_ID,

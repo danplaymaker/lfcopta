@@ -1,0 +1,3 @@
+{
+  "_comment": "All-time historical base stats keyed by Stats Perform player UUID. Current season Opta stats are added on top of these. Populate UUIDs from /api/player-uuids."
+}

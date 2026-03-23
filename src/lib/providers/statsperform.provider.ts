@@ -16,9 +16,7 @@ import {
   fetchMa2ForMatch,
   getMatchId,
   getFixtureKickoffDate,
-  findLatestPlayedFixture,
 } from "@/lib/services/opta.service";
-import type { OptaFixture } from "@/lib/services/opta.service";
 import { extractMatchStats, safePercent } from "@/lib/mappers/opta.mapper";
 import type { MatchPlayerStats } from "@/lib/mappers/opta.mapper";
 
@@ -60,16 +58,19 @@ function getStatValue(
   return undefined;
 }
 
+interface SideConfig {
+  outletApiKey: string;
+  outletSecretKey: string;
+  contestantId: string;
+  tmclIds: string[];
+  team: "LFC Men" | "LFC Women";
+  season: string;
+}
+
 /**
- * Stats Perform provider — fetches live data from Opta MA1/MA2 feeds,
- * aggregates season stats, and serves them through the standard provider interface.
- *
- * Required environment variables:
- * - OUTLET_API_KEY
- * - OUTLET_SECRET_KEY
- * - MEN_OPTA_CONTESTANT_ID
- * - OPTA_TOURNAMENT_CALENDAR_IDS (comma-separated)
- * - STATSPERFORM_TEAM (optional, defaults to "LFC Men")
+ * Stats Perform provider — fetches live data from Opta MA1/MA2 feeds
+ * for both Men's and Women's teams, aggregates season stats, and serves
+ * them through the standard provider interface.
  */
 export class StatsPerformProvider implements DataProvider {
   name = "statsperform";
@@ -77,43 +78,57 @@ export class StatsPerformProvider implements DataProvider {
   private cacheTimestamp: number = 0;
   private readonly CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
-  private getConfig() {
-    const outletApiKey = process.env.OUTLET_API_KEY;
-    const outletSecretKey = process.env.OUTLET_SECRET_KEY;
-    const contestantId = process.env.MEN_OPTA_CONTESTANT_ID;
-    const tmclIdsRaw = process.env.OPTA_TOURNAMENT_CALENDAR_IDS;
-    const team = (process.env.STATSPERFORM_TEAM || "LFC Men") as
-      | "LFC Men"
-      | "LFC Women";
+  private getSideConfigs(): SideConfig[] {
     const season = process.env.STATSPERFORM_SEASON || "2025-26";
+    const sides: SideConfig[] = [];
 
-    if (!outletApiKey || !outletSecretKey || !contestantId || !tmclIdsRaw) {
+    // Men's config
+    const menOutletKey = process.env.MEN_OUTLET_API_KEY || process.env.OUTLET_API_KEY;
+    const menOutletSecret = process.env.MEN_OUTLET_SECRET_KEY || process.env.OUTLET_SECRET_KEY;
+    const menContestantId = process.env.MEN_OPTA_CONTESTANT_ID;
+    const menTmclRaw = process.env.MEN_OPTA_TOURNAMENT_CALENDAR_IDS || process.env.OPTA_TOURNAMENT_CALENDAR_IDS;
+
+    if (menOutletKey && menOutletSecret && menContestantId && menTmclRaw) {
+      sides.push({
+        outletApiKey: menOutletKey,
+        outletSecretKey: menOutletSecret,
+        contestantId: menContestantId,
+        tmclIds: menTmclRaw.split(",").map((s) => s.trim()).filter(Boolean),
+        team: "LFC Men",
+        season,
+      });
+    }
+
+    // Women's config
+    const womenOutletKey = process.env.WOMEN_OUTLET_API_KEY;
+    const womenOutletSecret = process.env.WOMEN_OUTLET_SECRET_KEY;
+    const womenContestantId = process.env.WOMEN_OPTA_CONTESTANT_ID;
+    const womenTmclRaw = process.env.WOMEN_OPTA_TOURNAMENT_CALENDAR_IDS;
+
+    if (womenOutletKey && womenOutletSecret && womenContestantId && womenTmclRaw) {
+      sides.push({
+        outletApiKey: womenOutletKey,
+        outletSecretKey: womenOutletSecret,
+        contestantId: womenContestantId,
+        tmclIds: womenTmclRaw.split(",").map((s) => s.trim()).filter(Boolean),
+        team: "LFC Women",
+        season,
+      });
+    }
+
+    if (sides.length === 0) {
       throw new Error(
-        "Stats Perform provider requires OUTLET_API_KEY, " +
-          "OUTLET_SECRET_KEY, MEN_OPTA_CONTESTANT_ID, " +
-          "and OPTA_TOURNAMENT_CALENDAR_IDS environment variables."
+        "Stats Perform provider requires at least one side configured. " +
+          "Set MEN_OPTA_CONTESTANT_ID + OPTA_TOURNAMENT_CALENDAR_IDS for men, " +
+          "or WOMEN_OPTA_CONTESTANT_ID + WOMEN_OPTA_TOURNAMENT_CALENDAR_IDS for women."
       );
     }
 
-    const tmclIds = tmclIdsRaw
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    return { outletApiKey, outletSecretKey, contestantId, tmclIds, team, season };
+    return sides;
   }
 
-  private async fetchAndAggregate(): Promise<LiverpoolPlayerRecord[]> {
-    // Return cached data if still fresh
-    if (
-      this.cachedPlayers &&
-      Date.now() - this.cacheTimestamp < this.CACHE_TTL_MS
-    ) {
-      return this.cachedPlayers;
-    }
-
-    const config = this.getConfig();
-    const label = "statsperform";
+  private async fetchSide(config: SideConfig): Promise<LiverpoolPlayerRecord[]> {
+    const label = config.team === "LFC Women" ? "statsperform-women" : "statsperform-men";
 
     const token = await getOptaAccessToken(
       config.outletApiKey,
@@ -221,10 +236,6 @@ export class StatsPerformProvider implements DataProvider {
       }
     }
 
-    // Find latest fixture for lastMatch context
-    const latestFixture = findLatestPlayedFixture(fixtures);
-
-    // Convert aggregations to player records
     const players: LiverpoolPlayerRecord[] = [];
 
     for (const [, agg] of aggregations) {
@@ -320,6 +331,32 @@ export class StatsPerformProvider implements DataProvider {
 
       players.push(player);
     }
+
+    return players;
+  }
+
+  private async fetchAndAggregate(): Promise<LiverpoolPlayerRecord[]> {
+    // Return cached data if still fresh
+    if (
+      this.cachedPlayers &&
+      Date.now() - this.cacheTimestamp < this.CACHE_TTL_MS
+    ) {
+      return this.cachedPlayers;
+    }
+
+    const sideConfigs = this.getSideConfigs();
+
+    // Fetch all sides in parallel
+    const sideResults = await Promise.all(
+      sideConfigs.map((config) =>
+        this.fetchSide(config).catch((err) => {
+          console.error(`[${config.team}] Failed to fetch: ${err}`);
+          return [] as LiverpoolPlayerRecord[];
+        })
+      )
+    );
+
+    const players = sideResults.flat();
 
     this.cachedPlayers = players;
     this.cacheTimestamp = Date.now();
