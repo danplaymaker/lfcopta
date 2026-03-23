@@ -80,12 +80,44 @@ export async function updateWebflowItem(
 }
 
 /**
- * BUG FIX: Added Content-Type header for JSON body.
+ * Fetch all domain IDs for a Webflow site (custom + staging).
+ */
+async function fetchDomainIds(
+  siteId: string,
+  token: string
+): Promise<string[]> {
+  const url = `https://api.webflow.com/v2/sites/${siteId}/custom_domains`;
+
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Webflow domain fetch failed ${res.status}: ${await res.text()}`
+    );
+  }
+
+  const json = await res.json();
+  const domains: { id: string }[] = json.customDomains || [];
+  return domains.map((d) => d.id);
+}
+
+/**
+ * Publish a Webflow site by auto-fetching its domain IDs first.
  */
 export async function publishWebflowSite(
   siteId: string,
   token: string
 ): Promise<unknown> {
+  const domainIds = await fetchDomainIds(siteId, token);
+
+  if (domainIds.length === 0) {
+    throw new Error(
+      "Webflow publish failed: no domains found for site. Check your WEBFLOW_SITE_ID."
+    );
+  }
+
   const url = `https://api.webflow.com/v2/sites/${siteId}/publish`;
 
   const res = await fetch(url, {
@@ -94,7 +126,7 @@ export async function publishWebflowSite(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ publishTo: ["production"] }),
+    body: JSON.stringify({ publishTo: domainIds }),
   });
 
   if (!res.ok) {
