@@ -72,6 +72,22 @@ describe("extractMatchStats", () => {
     expect(result2.blocks).toBe(5);
   });
 
+  it("derives shotsOnTargetFaced from saves + goalsConceded", () => {
+    const statsArray = [
+      { type: "saves", value: "5" },
+      { type: "goalsConceded", value: "2" },
+    ];
+
+    const result = extractMatchStats(statsArray);
+    expect(result.shotsOnTargetFaced).toBe(7);
+    expect(result.saves).toBe(5);
+  });
+
+  it("shotsOnTargetFaced is 0 when keeper has no saves or goals conceded", () => {
+    const result = extractMatchStats([]);
+    expect(result.shotsOnTargetFaced).toBe(0);
+  });
+
   it("combines inside and outside box shots faced", () => {
     const statsArray = [
       { type: "attemptsConcededIbox", value: "4" },

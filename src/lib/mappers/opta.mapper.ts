@@ -47,7 +47,8 @@ export function extractMatchStats(
     blocks: (lookup.outfielderBlock ?? 0) + (lookup.blockedScoringAtt ?? 0),
     shotsFaced:
       (lookup.attemptsConcededIbox ?? 0) + (lookup.attemptsConcededObox ?? 0),
-    shotsOnTargetFaced: lookup.shotsOnTargetFaced ?? 0,
+    shotsOnTargetFaced:
+      (lookup.saves ?? 0) + (lookup.goalsConceded ?? 0),
     passes: lookup.totalPass ?? 0,
     passesCompleted: lookup.accuratePass ?? 0,
     saves: lookup.saves ?? 0,
