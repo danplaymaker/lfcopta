@@ -80,13 +80,47 @@ export async function updateWebflowItem(
 }
 
 /**
- * BUG FIX: Added Content-Type header for JSON body.
+ * Fetch custom domain IDs for a Webflow site.
+ */
+async function fetchCustomDomainIds(
+  siteId: string,
+  token: string
+): Promise<string[]> {
+  const url = `https://api.webflow.com/v2/sites/${siteId}/custom_domains`;
+
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Webflow domain fetch failed ${res.status}: ${await res.text()}`
+    );
+  }
+
+  const json = await res.json();
+  const domains: { id: string }[] = json.customDomains || [];
+  return domains.map((d) => d.id);
+}
+
+/**
+ * Publish a Webflow site to its staging subdomain and any custom domains.
  */
 export async function publishWebflowSite(
   siteId: string,
   token: string
 ): Promise<unknown> {
+  const customDomainIds = await fetchCustomDomainIds(siteId, token);
+
   const url = `https://api.webflow.com/v2/sites/${siteId}/publish`;
+
+  const body: Record<string, unknown> = {
+    publishToWebflowSubdomain: true,
+  };
+
+  if (customDomainIds.length > 0) {
+    body.customDomains = customDomainIds;
+  }
 
   const res = await fetch(url, {
     method: "POST",
@@ -94,7 +128,7 @@ export async function publishWebflowSite(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ publishTo: ["production"] }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {
