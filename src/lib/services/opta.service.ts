@@ -178,19 +178,30 @@ export async function fetchMa2ForMatch(
   token: string,
   label: string
 ): Promise<Ma2Response> {
-  const url = `https://api.performfeeds.com/soccerdata/matchstats/${outletApiKey}/?detailed=yes&fx=${matchId}&_rt=b&_fmt=json`;
+  // Try detailed first (Premium bundle), fall back to basic (Scores-Live bundle)
+  const detailedUrl = `https://api.performfeeds.com/soccerdata/matchstats/${outletApiKey}/?detailed=yes&fx=${matchId}&_rt=b&_fmt=json`;
+  const basicUrl = `https://api.performfeeds.com/soccerdata/matchstats/${outletApiKey}/?fx=${matchId}&_rt=b&_fmt=json`;
 
-  const res = await fetch(url, {
+  const detailedRes = await fetch(detailedUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!res.ok) {
+  if (detailedRes.ok) {
+    return await detailedRes.json();
+  }
+
+  // Detailed not available — try basic
+  const basicRes = await fetch(basicUrl, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!basicRes.ok) {
     throw new Error(
-      `[${label}] MA2 fetch failed ${res.status}: ${await res.text()}`
+      `[${label}] MA2 fetch failed ${basicRes.status}: ${await basicRes.text()}`
     );
   }
 
-  return await res.json();
+  return await basicRes.json();
 }
 
 // ── Fixture helpers ──
