@@ -1,3 +1,162 @@
 {
-  "_comment": "All-time historical base stats keyed by Stats Perform player UUID. Current season Opta stats are added on top of these. Populate UUIDs from /api/player-uuids."
+  "cn8ti0qxxvg0z0vvmwkocggr9": {
+    "name": "Rachel Laws",
+    "appearances": 108,
+    "goals": 0,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "768y6t2upduf30343ymkariwa": {
+    "name": "Faye Kirby",
+    "appearances": 16,
+    "goals": 0,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "cq1ojxtj31dshjvlex145zw4q": {
+    "name": "Lucy Parry",
+    "appearances": 49,
+    "goals": 1,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "9parlijxpxnfis96jwy9p37bp": {
+    "name": "Gemma Evans",
+    "appearances": 39,
+    "goals": 1,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "230r9tcwg89z5b9kxdqwi336d": {
+    "name": "Grace Fisk",
+    "appearances": 74,
+    "goals": 4,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "7mdnewy67dddv3ahqw1qhbx05": {
+    "name": "Risa Shimizu",
+    "appearances": 20,
+    "goals": 1,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "2jwojltrp06sa8qloordtohrd": {
+    "name": "Lily Woodham",
+    "appearances": 17,
+    "goals": 0,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "doqt0my3sg0u3zmfgg59l8zxl": {
+    "name": "Jenna Clark",
+    "appearances": 80,
+    "goals": 3,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "5wjfxb57gtzmp7m29wotyafv9": {
+    "name": "Gemma Bonner",
+    "appearances": 187,
+    "goals": 15,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "d1qqpvdx6b20aqcqav7l2dvdg": {
+    "name": "Hannah Silcock",
+    "appearances": 22,
+    "goals": 0,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "efvcf4syatkaw5fbo37i5hat": {
+    "name": "Fuka Nagano",
+    "appearances": 91,
+    "goals": 1,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "15b0z85uttk1ibcag2g4476jt": {
+    "name": "Marie Hobinger",
+    "appearances": 59,
+    "goals": 8,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "d0da7ef6pvbmrnw0j93iv1jze": {
+    "name": "Sofie Lundgaard",
+    "appearances": 41,
+    "goals": 0,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "9v895fdc1blaaboscv14vp149": {
+    "name": "Ceri Holland",
+    "appearances": 134,
+    "goals": 14,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "5ngwj4sl94gjnsd0lk3lkq2ac": {
+    "name": "Kirsty Maclean",
+    "appearances": 23,
+    "goals": 0,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "9zmawcjx19fpz5yxrh2hkw3c9": {
+    "name": "Cornelia Kapocs",
+    "appearances": 54,
+    "goals": 6,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "7k5or8x3fqo7qkzii18kwpaeh": {
+    "name": "Leanne Kiernan",
+    "appearances": 76,
+    "goals": 23,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "2nqlq23w7g732ttrbnt2u2s4p": {
+    "name": "Sophie Roman Haug",
+    "appearances": 50,
+    "goals": 13,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "7vkjugzwhhp5ml21o17qlz59m": {
+    "name": "Beata Olsson",
+    "appearances": 23,
+    "goals": 11,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  },
+  "bq6qae0iohn03ghdjgqiq7eac": {
+    "name": "Mia Enderby",
+    "appearances": 72,
+    "goals": 13,
+    "assists": 0,
+    "cleanSheets": 0,
+    "saves": 0
+  }
 }
