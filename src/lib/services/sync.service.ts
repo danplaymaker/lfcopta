@@ -18,6 +18,7 @@ import type { OptaFixture } from "./opta.service";
 import {
   fetchAllWebflowItems,
   updateWebflowItem,
+  publishWebflowItems,
   publishWebflowSite,
   buildWebflowIndex,
 } from "./webflow.service";
@@ -240,6 +241,7 @@ async function runSeasonUpdate(
 
   let updated = 0;
   const unmatched: Array<{ playerId: string; name: string }> = [];
+  const updatedItemIds: string[] = [];
 
   for (const [playerId, agg] of playersAgg.entries()) {
     const wfItem = webflowIndex.get(playerId);
@@ -298,7 +300,18 @@ async function runSeasonUpdate(
       fd
     );
 
+    updatedItemIds.push(wfItem.id);
     updated++;
+  }
+
+  // Publish updated items so they go live immediately
+  if (updatedItemIds.length > 0) {
+    await publishWebflowItems(
+      env.WEBFLOW_COLLECTION_ID,
+      env.WEBFLOW_API_TOKEN,
+      updatedItemIds
+    );
+    console.info(`[${label}] Published ${updatedItemIds.length} items live`);
   }
 
   console.info(
@@ -328,6 +341,7 @@ async function runLastMatchUpdate(
 
   let updated = 0;
   const unmatched: Array<{ playerId: string; name: string }> = [];
+  const updatedItemIds: string[] = [];
 
   for (const [playerId, agg] of playersAgg.entries()) {
     const wfItem = webflowIndex.get(playerId);
@@ -370,7 +384,18 @@ async function runLastMatchUpdate(
       fd
     );
 
+    updatedItemIds.push(wfItem.id);
     updated++;
+  }
+
+  // Publish updated items so they go live immediately
+  if (updatedItemIds.length > 0) {
+    await publishWebflowItems(
+      env.WEBFLOW_COLLECTION_ID,
+      env.WEBFLOW_API_TOKEN,
+      updatedItemIds
+    );
+    console.info(`[${label}] Published ${updatedItemIds.length} last-match items live`);
   }
 
   console.info(

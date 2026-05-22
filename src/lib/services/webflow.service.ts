@@ -104,6 +104,44 @@ async function fetchCustomDomainIds(
 }
 
 /**
+ * Publish specific CMS items so they go live immediately.
+ * Uses Webflow v2 collection items publish endpoint.
+ */
+export async function publishWebflowItems(
+  collectionId: string,
+  token: string,
+  itemIds: string[]
+): Promise<void> {
+  if (itemIds.length === 0) return;
+
+  const batchSize = 100;
+  for (let i = 0; i < itemIds.length; i += batchSize) {
+    const batch = itemIds.slice(i, i + batchSize);
+    const url = `https://api.webflow.com/v2/collections/${collectionId}/items/publish`;
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ itemIds: batch }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Webflow items publish error:", {
+        status: res.status,
+        body: text,
+      });
+      throw new Error(
+        `Webflow items publish failed ${res.status}: ${text}`
+      );
+    }
+  }
+}
+
+/**
  * Publish a Webflow site to its staging subdomain and any custom domains.
  */
 export async function publishWebflowSite(
