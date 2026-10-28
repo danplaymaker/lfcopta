@@ -17,11 +17,12 @@ import {
 import type { OptaFixture } from "./opta.service";
 import {
   fetchAllWebflowItems,
-  updateWebflowItem,
+  updateWebflowItemsBulk,
   publishWebflowItems,
   publishWebflowSite,
   buildWebflowIndex,
 } from "./webflow.service";
+import type { WebflowItemUpdate } from "./webflow.service";
 import {
   extractMatchStats,
   safePercent,
@@ -242,6 +243,7 @@ async function runSeasonUpdate(
   let updated = 0;
   const unmatched: Array<{ playerId: string; name: string }> = [];
   const updatedItemIds: string[] = [];
+  const pendingUpdates: WebflowItemUpdate[] = [];
 
   for (const [playerId, agg] of playersAgg.entries()) {
     const wfItem = webflowIndex.get(playerId);
@@ -293,16 +295,16 @@ async function runSeasonUpdate(
       fd[ALL_TIME_FIELDS.saves] = allTimePlayer.saves;
     }
 
-    await updateWebflowItem(
-      env.WEBFLOW_COLLECTION_ID,
-      env.WEBFLOW_API_TOKEN,
-      wfItem.id,
-      fd
-    );
-
+    pendingUpdates.push({ id: wfItem.id, fieldData: fd });
     updatedItemIds.push(wfItem.id);
     updated++;
   }
+
+  await updateWebflowItemsBulk(
+    env.WEBFLOW_COLLECTION_ID,
+    env.WEBFLOW_API_TOKEN,
+    pendingUpdates
+  );
 
   // Publish updated items so they go live immediately
   if (updatedItemIds.length > 0) {
@@ -342,6 +344,7 @@ async function runLastMatchUpdate(
   let updated = 0;
   const unmatched: Array<{ playerId: string; name: string }> = [];
   const updatedItemIds: string[] = [];
+  const pendingUpdates: WebflowItemUpdate[] = [];
 
   for (const [playerId, agg] of playersAgg.entries()) {
     const wfItem = webflowIndex.get(playerId);
@@ -377,16 +380,16 @@ async function runLastMatchUpdate(
       lm.stats.shotsOnTargetFaced
     );
 
-    await updateWebflowItem(
-      env.WEBFLOW_COLLECTION_ID,
-      env.WEBFLOW_API_TOKEN,
-      wfItem.id,
-      fd
-    );
-
+    pendingUpdates.push({ id: wfItem.id, fieldData: fd });
     updatedItemIds.push(wfItem.id);
     updated++;
   }
+
+  await updateWebflowItemsBulk(
+    env.WEBFLOW_COLLECTION_ID,
+    env.WEBFLOW_API_TOKEN,
+    pendingUpdates
+  );
 
   // Publish updated items so they go live immediately
   if (updatedItemIds.length > 0) {

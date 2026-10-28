@@ -4,6 +4,100 @@
 
 const WF_PLAYER_UUID_FIELD = "player-uuid";
 
+const RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504]);
+const MAX_ATTEMPTS = 6;
+const MAX_DELAY_MS = 30_000;
+const BULK_BATCH_SIZE = 100;
+
+type Sleep = (ms: number) => Promise<void>;
+let sleep: Sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** Test hook: replace the delay function used between retries. */
+export function setWebflowSleep(fn: Sleep): void {
+  sleep = fn;
+}
+
+function retryDelayMs(res: Response, attempt: number): number {
+  const retryAfter = Number(res.headers.get("retry-after"));
+  if (Number.isFinite(retryAfter) && retryAfter > 0) {
+    return Math.min(retryAfter * 1000, MAX_DELAY_MS);
+  }
+  return Math.min(1000 * 2 ** attempt, MAX_DELAY_MS);
+}
+
+/**
+ * fetch() for the Webflow API that retries rate limits (429) and
+ * transient gateway errors (5xx), honouring Retry-After when present.
+ */
+export async function webflowFetch(
+  url: string,
+  init: RequestInit
+): Promise<Response> {
+  let res = await fetch(url, init);
+  for (
+    let attempt = 1;
+    attempt < MAX_ATTEMPTS && RETRYABLE_STATUS.has(res.status);
+    attempt++
+  ) {
+    const delay = retryDelayMs(res, attempt);
+    console.warn(
+      `Webflow ${res.status} on ${init.method ?? "GET"} ${url}, retry ${attempt} in ${delay}ms`
+    );
+    await sleep(delay);
+    res = await fetch(url, init);
+  }
+  return res;
+}
+
+function stripEmptyFields(
+  fields: Record<string, unknown>
+): Record<string, unknown> {
+  const clean: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(fields)) {
+    if (value !== undefined && value !== null) clean[key] = value;
+  }
+  return clean;
+}
+
+export interface WebflowItemUpdate {
+  id: string;
+  fieldData: Record<string, unknown>;
+}
+
+/**
+ * Update many items with Webflow's bulk endpoint (100 items per request),
+ * instead of one PATCH per item, to stay inside the API rate limit.
+ */
+export async function updateWebflowItemsBulk(
+  collectionId: string,
+  token: string,
+  updates: WebflowItemUpdate[]
+): Promise<void> {
+  const url = `https://api.webflow.com/v2/collections/${collectionId}/items`;
+
+  for (let i = 0; i < updates.length; i += BULK_BATCH_SIZE) {
+    const batch = updates.slice(i, i + BULK_BATCH_SIZE).map((u) => ({
+      id: u.id,
+      fieldData: stripEmptyFields(u.fieldData),
+    }));
+
+    const res = await webflowFetch(url, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ items: batch }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Webflow bulk PATCH error:", { status: res.status, body: text });
+      throw new Error(`Webflow bulk update failed ${res.status}: ${text}`);
+    }
+  }
+}
+
 export interface WebflowItem {
   id: string;
   fieldData?: Record<string, unknown>;
@@ -20,7 +114,7 @@ export async function fetchAllWebflowItems(
   while (true) {
     const url = `https://api.webflow.com/v2/collections/${collectionId}/items?limit=${limit}&offset=${offset}`;
 
-    const res = await fetch(url, {
+    const res = await webflowFetch(url, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -57,7 +151,7 @@ export async function updateWebflowItem(
     }
   }
 
-  const res = await fetch(url, {
+  const res = await webflowFetch(url, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -88,7 +182,7 @@ async function fetchCustomDomainIds(
 ): Promise<string[]> {
   const url = `https://api.webflow.com/v2/sites/${siteId}/custom_domains`;
 
-  const res = await fetch(url, {
+  const res = await webflowFetch(url, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -119,7 +213,7 @@ export async function publishWebflowItems(
     const batch = itemIds.slice(i, i + batchSize);
     const url = `https://api.webflow.com/v2/collections/${collectionId}/items/publish`;
 
-    const res = await fetch(url, {
+    const res = await webflowFetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -160,7 +254,7 @@ export async function publishWebflowSite(
     body.customDomains = customDomainIds;
   }
 
-  const res = await fetch(url, {
+  const res = await webflowFetch(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,

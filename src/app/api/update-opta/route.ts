@@ -52,10 +52,9 @@ export async function GET(request: NextRequest) {
       return runForSide(envResult.env, mode);
     };
 
-    const [menResult, womenResult] = await Promise.all([
-      runSide(menEnvResult, "men"),
-      runSide(womenEnvResult, "women"),
-    ]);
+    // Sequential, not parallel: both sides share one Webflow rate limit.
+    const menResult = await runSide(menEnvResult, "men");
+    const womenResult = await runSide(womenEnvResult, "women");
 
     results.push(menResult, womenResult);
 
