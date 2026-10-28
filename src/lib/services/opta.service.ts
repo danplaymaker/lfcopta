@@ -264,3 +264,80 @@ export function findLatestPlayedFixture(
 
   return null;
 }
+
+// ── Squad / calendar lookups (diagnostics) ──
+
+export interface OptaSquadPlayer {
+  playerId: string;
+  name: string;
+  position: string;
+  status: string;
+}
+
+export interface OptaSquadLookup {
+  tmclId: string | null;
+  competition: string | null;
+  players: OptaSquadPlayer[];
+}
+
+interface RawSquadPerson {
+  id?: string;
+  matchName?: string;
+  firstName?: string;
+  lastName?: string;
+  shortFirstName?: string;
+  shortLastName?: string;
+  knownName?: string;
+  position?: string;
+  type?: string;
+  status?: string;
+}
+
+interface RawSquad {
+  tournamentCalendarId?: string;
+  competitionName?: string;
+  person?: RawSquadPerson[];
+}
+
+/**
+ * TM3 squads feed: current squad lists for a contestant, one per active competition.
+ */
+export async function fetchSquadsForContestant(
+  outletApiKey: string,
+  contestantId: string,
+  token: string
+): Promise<OptaSquadLookup[]> {
+  const url = `https://api.performfeeds.com/soccerdata/squads/${outletApiKey}?ctst=${contestantId}&detailed=yes&_pgSz=1000&_fmt=json&_rt=b`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const bodyText = await res.text();
+  if (!res.ok) {
+    throw new Error(`Squads fetch failed ${res.status}: ${bodyText}`);
+  }
+
+  const json = JSON.parse(bodyText) as { squad?: RawSquad[] | RawSquad };
+  const squads = Array.isArray(json.squad)
+    ? json.squad
+    : json.squad
+      ? [json.squad]
+      : [];
+
+  return squads.map((sq) => ({
+    tmclId: sq.tournamentCalendarId ?? null,
+    competition: sq.competitionName ?? null,
+    players: (sq.person ?? [])
+      .filter((p) => !p.type || p.type === "player")
+      .filter((p): p is RawSquadPerson & { id: string } => Boolean(p.id))
+      .map((p) => ({
+        playerId: p.id,
+        name:
+          p.knownName ||
+          `${p.firstName ?? ""} ${p.lastName ?? ""}`.trim() ||
+          p.matchName ||
+          "",
+        position: p.position ?? "",
+        status: p.status ?? "",
+      })),
+  }));
+}
