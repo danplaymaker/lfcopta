@@ -178,19 +178,30 @@ export async function fetchMa2ForMatch(
   token: string,
   label: string
 ): Promise<Ma2Response> {
-  const url = `https://api.performfeeds.com/soccerdata/matchstats/${outletApiKey}/?detailed=yes&fx=${matchId}&_rt=b&_fmt=json`;
+  // Try detailed first (Premium bundle), fall back to basic (Scores-Live bundle)
+  const detailedUrl = `https://api.performfeeds.com/soccerdata/matchstats/${outletApiKey}/?detailed=yes&fx=${matchId}&_rt=b&_fmt=json`;
+  const basicUrl = `https://api.performfeeds.com/soccerdata/matchstats/${outletApiKey}/?fx=${matchId}&_rt=b&_fmt=json`;
 
-  const res = await fetch(url, {
+  const detailedRes = await fetch(detailedUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!res.ok) {
+  if (detailedRes.ok) {
+    return await detailedRes.json();
+  }
+
+  // Detailed not available — try basic
+  const basicRes = await fetch(basicUrl, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!basicRes.ok) {
     throw new Error(
-      `[${label}] MA2 fetch failed ${res.status}: ${await res.text()}`
+      `[${label}] MA2 fetch failed ${basicRes.status}: ${await basicRes.text()}`
     );
   }
 
-  return await res.json();
+  return await basicRes.json();
 }
 
 // ── Fixture helpers ──
@@ -252,4 +263,139 @@ export function findLatestPlayedFixture(
   }
 
   return null;
+}
+
+// ── Squad / calendar lookups (diagnostics) ──
+
+export interface OptaSquadPlayer {
+  playerId: string;
+  name: string;
+  position: string;
+  status: string;
+}
+
+export interface OptaSquadLookup {
+  tmclId: string | null;
+  competition: string | null;
+  players: OptaSquadPlayer[];
+}
+
+interface RawSquadPerson {
+  id?: string;
+  matchName?: string;
+  firstName?: string;
+  lastName?: string;
+  shortFirstName?: string;
+  shortLastName?: string;
+  knownName?: string;
+  position?: string;
+  type?: string;
+  status?: string;
+}
+
+interface RawSquad {
+  tournamentCalendarId?: string;
+  competitionName?: string;
+  person?: RawSquadPerson[];
+}
+
+/**
+ * TM3 squads feed: current squad lists for a contestant, one per active competition.
+ */
+export async function fetchSquadsForContestant(
+  outletApiKey: string,
+  contestantId: string,
+  token: string
+): Promise<OptaSquadLookup[]> {
+  const url = `https://api.performfeeds.com/soccerdata/squads/${outletApiKey}?ctst=${contestantId}&detailed=yes&_pgSz=1000&_fmt=json&_rt=b`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const bodyText = await res.text();
+  if (!res.ok) {
+    throw new Error(`Squads fetch failed ${res.status}: ${bodyText}`);
+  }
+
+  const json = JSON.parse(bodyText) as { squad?: RawSquad[] | RawSquad };
+  const squads = Array.isArray(json.squad)
+    ? json.squad
+    : json.squad
+      ? [json.squad]
+      : [];
+
+  return squads.map((sq) => ({
+    tmclId: sq.tournamentCalendarId ?? null,
+    competition: sq.competitionName ?? null,
+    players: (sq.person ?? [])
+      .filter((p) => !p.type || p.type === "player")
+      .filter((p): p is RawSquadPerson & { id: string } => Boolean(p.id))
+      .map((p) => ({
+        playerId: p.id,
+        name:
+          p.knownName ||
+          `${p.firstName ?? ""} ${p.lastName ?? ""}`.trim() ||
+          p.matchName ||
+          "",
+        position: p.position ?? "",
+        status: p.status ?? "",
+      })),
+  }));
+}
+
+export interface OptaCalendarSummary {
+  tmclId: string;
+  competition: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+}
+
+interface RawCalendarComp {
+  id?: string;
+  name?: string;
+  knownName?: string;
+  tournamentCalendar?: Array<{
+    id?: string;
+    name?: string;
+    startDate?: string;
+    endDate?: string;
+  }>;
+}
+
+/**
+ * OT2 feed: active tournament calendars this outlet is authorised for.
+ */
+export async function fetchActiveCalendars(
+  outletApiKey: string,
+  token: string
+): Promise<OptaCalendarSummary[]> {
+  const url = `https://api.performfeeds.com/soccerdata/tournamentcalendar/${outletApiKey}/active/authorized?_fmt=json&_rt=b`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const bodyText = await res.text();
+  if (!res.ok) {
+    throw new Error(`Calendar fetch failed ${res.status}: ${bodyText}`);
+  }
+
+  const json = JSON.parse(bodyText) as {
+    competition?: RawCalendarComp[] | RawCalendarComp;
+  };
+  const comps = Array.isArray(json.competition)
+    ? json.competition
+    : json.competition
+      ? [json.competition]
+      : [];
+
+  return comps.flatMap((c) =>
+    (c.tournamentCalendar ?? [])
+      .filter((t): t is { id: string } & typeof t => Boolean(t.id))
+      .map((t) => ({
+        tmclId: t.id,
+        competition: c.knownName || c.name || "",
+        name: t.name ?? "",
+        startDate: t.startDate ?? "",
+        endDate: t.endDate ?? "",
+      }))
+  );
 }
