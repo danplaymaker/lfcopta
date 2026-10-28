@@ -272,6 +272,9 @@ export interface OptaSquadPlayer {
   name: string;
   position: string;
   status: string;
+  nationality: string;
+  dateOfBirth: string;
+  shirtNumber: number | null;
 }
 
 export interface OptaSquadLookup {
@@ -291,6 +294,9 @@ interface RawSquadPerson {
   position?: string;
   type?: string;
   status?: string;
+  nationality?: string;
+  dateOfBirth?: string;
+  shirtNumber?: number | string;
 }
 
 interface RawSquad {
@@ -338,6 +344,12 @@ export async function fetchSquadsForContestant(
           "",
         position: p.position ?? "",
         status: p.status ?? "",
+        nationality: p.nationality ?? "",
+        dateOfBirth: p.dateOfBirth ?? "",
+        shirtNumber:
+          p.shirtNumber === undefined || p.shirtNumber === ""
+            ? null
+            : Number(p.shirtNumber),
       })),
   }));
 }
