@@ -341,3 +341,61 @@ export async function fetchSquadsForContestant(
       })),
   }));
 }
+
+export interface OptaCalendarSummary {
+  tmclId: string;
+  competition: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+}
+
+interface RawCalendarComp {
+  id?: string;
+  name?: string;
+  knownName?: string;
+  tournamentCalendar?: Array<{
+    id?: string;
+    name?: string;
+    startDate?: string;
+    endDate?: string;
+  }>;
+}
+
+/**
+ * OT2 feed: active tournament calendars this outlet is authorised for.
+ */
+export async function fetchActiveCalendars(
+  outletApiKey: string,
+  token: string
+): Promise<OptaCalendarSummary[]> {
+  const url = `https://api.performfeeds.com/soccerdata/tournamentcalendar/${outletApiKey}/active/authorized?_fmt=json&_rt=b`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const bodyText = await res.text();
+  if (!res.ok) {
+    throw new Error(`Calendar fetch failed ${res.status}: ${bodyText}`);
+  }
+
+  const json = JSON.parse(bodyText) as {
+    competition?: RawCalendarComp[] | RawCalendarComp;
+  };
+  const comps = Array.isArray(json.competition)
+    ? json.competition
+    : json.competition
+      ? [json.competition]
+      : [];
+
+  return comps.flatMap((c) =>
+    (c.tournamentCalendar ?? [])
+      .filter((t): t is { id: string } & typeof t => Boolean(t.id))
+      .map((t) => ({
+        tmclId: t.id,
+        competition: c.knownName || c.name || "",
+        name: t.name ?? "",
+        startDate: t.startDate ?? "",
+        endDate: t.endDate ?? "",
+      }))
+  );
+}

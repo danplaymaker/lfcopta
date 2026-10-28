@@ -3,6 +3,7 @@ import { buildSideEnv } from "@/lib/services/sync.service";
 import {
   getOptaAccessToken,
   fetchSquadsForContestant,
+  fetchActiveCalendars,
 } from "@/lib/services/opta.service";
 
 /**
@@ -34,7 +35,14 @@ export async function GET() {
         env.OPTA_CONTESTANT_ID,
         token
       );
+      let activeCalendars: unknown;
+      try {
+        activeCalendars = await fetchActiveCalendars(env.OUTLET_API_KEY, token);
+      } catch (err) {
+        activeCalendars = { error: err instanceof Error ? err.message : String(err) };
+      }
       results[label] = {
+        activeCalendars,
         contestantId: env.OPTA_CONTESTANT_ID,
         configuredTmclIds: env.TMCL_IDS,
         squads,
