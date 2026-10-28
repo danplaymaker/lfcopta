@@ -21,6 +21,7 @@ export interface MatchPlayerStats {
   passesCompleted: number;
   saves: number;
   goalKicks: number;
+  cleanSheets: number;
 }
 
 export function extractMatchStats(
@@ -53,6 +54,7 @@ export function extractMatchStats(
     passesCompleted: lookup.accuratePass ?? 0,
     saves: lookup.saves ?? 0,
     goalKicks: lookup.goalKicks ?? 0,
+    cleanSheets: lookup.cleanSheet ?? 0,
   };
 }
 

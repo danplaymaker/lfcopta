@@ -33,6 +33,7 @@ import {
 } from "@/lib/mappers/opta.mapper";
 import type { MatchPlayerStats } from "@/lib/mappers/opta.mapper";
 import { loadHistoricalData, mergeAllTimeStats } from "./alltime.service";
+import type { SeasonAllTimeContribution } from "./alltime.service";
 
 // ── Types ──
 
@@ -73,6 +74,21 @@ interface SyncResult {
 export type { SyncResult };
 
 // ── Season aggregation from MA2 ──
+
+/**
+ * Whether a match should replace a player's current "last match".
+ * Only matches the player actually played in count; an unused substitute
+ * appearance would otherwise zero their last-match stats.
+ */
+export function isNewerPlayedMatch(
+  minutes: number,
+  kickoff: Date | null,
+  currentLastMatch: Date | null
+): boolean {
+  if (minutes <= 0) return false;
+  if (!currentLastMatch) return true;
+  return kickoff !== null && kickoff > currentLastMatch;
+}
 
 /**
  * BUG FIX: Per-match error handling — one failed MA2 doesn't kill the pipeline.
@@ -146,6 +162,7 @@ async function aggregateMa2Season(
             passesCompleted: 0,
             saves: 0,
             goalKicks: 0,
+            cleanSheets: 0,
           };
 
           seasonMap.set(pid, {
@@ -184,12 +201,9 @@ async function aggregateMa2Season(
         agg.season.passesCompleted += stats.passesCompleted;
         agg.season.saves += stats.saves;
         agg.season.goalKicks += stats.goalKicks;
+        agg.season.cleanSheets += stats.cleanSheets;
 
-        // BUG FIX: Only update lastMatch if this fixture is newer
-        if (
-          !agg.lastMatchDate ||
-          (kickoffDate && kickoffDate > agg.lastMatchDate)
-        ) {
+        if (isNewerPlayedMatch(stats.minutes, kickoffDate, agg.lastMatchDate)) {
           agg.lastMatchDate = kickoffDate;
           agg.lastMatch = {
             name: matchName,
@@ -216,9 +230,11 @@ async function aggregateMa2Season(
 async function runSeasonUpdate(
   env: SideEnv,
   token: string,
-  label: string
+  label: string,
+  preAggregated?: Map<string, PlayerSeasonAgg>
 ): Promise<SyncResult["season"]> {
-  const playersAgg = await aggregateMa2Season(env, token, label);
+  const playersAgg =
+    preAggregated ?? (await aggregateMa2Season(env, token, label));
   const webflowItems = await fetchAllWebflowItems(
     env.WEBFLOW_COLLECTION_ID,
     env.WEBFLOW_API_TOKEN
@@ -229,13 +245,14 @@ async function runSeasonUpdate(
   const historical = loadHistoricalData();
   const historicalSide = label.includes("women") ? historical.women : historical.men;
 
-  const seasonSummary = new Map<string, { games: number; goals: number; assists: number; saves: number }>();
+  const seasonSummary = new Map<string, SeasonAllTimeContribution>();
   for (const [pid, agg] of playersAgg) {
     seasonSummary.set(pid, {
       games: agg.season.games,
       goals: agg.season.goals,
       assists: agg.season.assists,
       saves: agg.season.saves,
+      cleanSheets: agg.season.cleanSheets,
     });
   }
   const allTimeMap = mergeAllTimeStats(historicalSide, seasonSummary);
@@ -332,9 +349,11 @@ async function runSeasonUpdate(
 async function runLastMatchUpdate(
   env: SideEnv,
   token: string,
-  label: string
+  label: string,
+  preAggregated?: Map<string, PlayerSeasonAgg>
 ): Promise<SyncResult["ma2"]> {
-  const playersAgg = await aggregateMa2Season(env, token, label);
+  const playersAgg =
+    preAggregated ?? (await aggregateMa2Season(env, token, label));
   const webflowItems = await fetchAllWebflowItems(
     env.WEBFLOW_COLLECTION_ID,
     env.WEBFLOW_API_TOKEN
@@ -472,9 +491,10 @@ export async function runForSide(
     return { label, mode, latest };
   }
 
-  // Default: both season + last-match
-  const season = await runSeasonUpdate(env, token, label);
-  const ma2 = await runLastMatchUpdate(env, token, label);
+  // Default: both season + last-match, sharing one pass over the MA2 feeds
+  const playersAgg = await aggregateMa2Season(env, token, label);
+  const season = await runSeasonUpdate(env, token, label, playersAgg);
+  const ma2 = await runLastMatchUpdate(env, token, label, playersAgg);
   return { label, mode: "both", season, ma2, siteId: env.WEBFLOW_SITE_ID };
 }
 

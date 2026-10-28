@@ -137,3 +137,17 @@ describe("Webflow field mappings", () => {
     }
   });
 });
+
+describe("extractMatchStats clean sheets", () => {
+  it("reads Opta's per-player cleanSheet stat", () => {
+    const result = extractMatchStats([
+      { type: "minsPlayed", value: "90" },
+      { type: "cleanSheet", value: "1" },
+    ]);
+    expect(result.cleanSheets).toBe(1);
+  });
+
+  it("defaults clean sheets to 0 when Opta omits the stat", () => {
+    expect(extractMatchStats([{ type: "goalsConceded", value: "2" }]).cleanSheets).toBe(0);
+  });
+});

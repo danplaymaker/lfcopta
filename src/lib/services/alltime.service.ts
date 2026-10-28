@@ -59,6 +59,14 @@ function loadJson(filename: string): Map<string, HistoricalPlayerStats> {
   return map;
 }
 
+export interface SeasonAllTimeContribution {
+  games: number;
+  goals: number;
+  assists: number;
+  saves: number;
+  cleanSheets: number;
+}
+
 let cachedMen: Map<string, HistoricalPlayerStats> | null = null;
 let cachedWomen: Map<string, HistoricalPlayerStats> | null = null;
 
@@ -82,7 +90,7 @@ export function clearHistoricalCache(): void {
  */
 export function mergeAllTimeStats(
   historical: Map<string, HistoricalPlayerStats>,
-  seasonMap: Map<string, { games: number; goals: number; assists: number; saves: number }>
+  seasonMap: Map<string, SeasonAllTimeContribution>
 ): Map<string, AllTimePlayerStats> {
   const allTime = new Map<string, AllTimePlayerStats>();
 
@@ -94,7 +102,7 @@ export function mergeAllTimeStats(
       appearances: base.appearances + (season?.games ?? 0),
       goals: base.goals + (season?.goals ?? 0),
       assists: base.assists + (season?.assists ?? 0),
-      cleanSheets: base.cleanSheets,
+      cleanSheets: base.cleanSheets + (season?.cleanSheets ?? 0),
       saves: base.saves + (season?.saves ?? 0),
     });
   }

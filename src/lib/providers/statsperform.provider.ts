@@ -206,6 +206,7 @@ export class StatsPerformProvider implements DataProvider {
                 passesCompleted: 0,
                 saves: 0,
                 goalKicks: 0,
+                cleanSheets: 0,
               },
               lastMatch: null,
               lastMatchDate: null,
@@ -221,8 +222,9 @@ export class StatsPerformProvider implements DataProvider {
           }
 
           if (
-            !agg.lastMatchDate ||
-            (kickoffDate && kickoffDate > agg.lastMatchDate)
+            stats.minutes > 0 &&
+            (!agg.lastMatchDate ||
+              (kickoffDate && kickoffDate > agg.lastMatchDate))
           ) {
             agg.lastMatchDate = kickoffDate;
             agg.lastMatch = {
@@ -256,6 +258,7 @@ export class StatsPerformProvider implements DataProvider {
         appearances: s.games,
         goals: s.goals || undefined,
         assists: s.assists || undefined,
+        cleanSheets: s.cleanSheets || undefined,
         minutesPlayed: s.minutes || undefined,
         detailedStats: {
           shots: s.shots || undefined,
